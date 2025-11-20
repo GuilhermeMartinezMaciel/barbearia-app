@@ -1,18 +1,18 @@
 const express = require('express');
 const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
-const path = require('path'); // Módulo para lidar com pastas
+const path = require('path');
 
 const app = express();
-// NA NUVEM, a porta é dada pelo sistema, senão usa a 3000
-const port = process.env.PORT || 3000; 
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-// SERVE OS ARQUIVOS HTML DA PASTA PUBLIC
-app.use(express.static(path.join(__dirname, 'public')));
 
-// --- SEUS DADOS E BANCO (Mantenha igual) ---
+// --- NÃO USAMOS MAIS A PASTA PUBLIC ---
+// O servidor agora procura os arquivos na mesma pasta onde ele está
+
+// --- BANCO DE DADOS ---
 const horariosFixos = ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00"];
 const db = new sqlite3.Database('./barbearia.db');
 
@@ -23,17 +23,19 @@ db.serialize(() => {
     )`);
 });
 
-// --- ROTAS (Mantenha as mesmas lógicas) ---
+// --- ROTAS DE PÁGINAS ---
 
-// Rota Principal (quando entra no site, manda o index.html)
+// Rota Principal (Carrega index.html da raiz)
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Rota Admin
+// Rota Admin (Carrega admin.html da raiz)
 app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+    res.sendFile(path.join(__dirname, 'admin.html'));
 });
+
+// --- ROTAS DA API (MANTIVE IGUAL) ---
 
 app.get('/horarios/:data', (req, res) => {
     const data = req.params.data;

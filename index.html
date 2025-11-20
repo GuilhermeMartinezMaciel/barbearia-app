@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbearia Elite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --gold: #d4af37;
+            --text: #e0e0e0;
+            --hover: #333;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .app-container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 { color: var(--gold); margin: 0; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 2px; }
+        p.subtitle { color: #777; font-size: 0.9rem; margin-top: 5px; }
+
+        /* SEÇÕES */
+        .section-title {
+            font-size: 0.9rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            margin-top: 25px;
+            border-left: 3px solid var(--gold);
+            padding-left: 10px;
+        }
+
+        /* CARD DE SERVIÇOS (GRID) */
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .service-card {
+            background: #252525;
+            border: 2px solid transparent;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .service-card:hover { background: var(--hover); }
+        
+        /* Quando selecionado */
+        .service-card.selected {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .service-icon { font-size: 1.5rem; display: block; margin-bottom: 5px; }
+        .service-name { font-size: 0.9rem; font-weight: bold; }
+        .service-price { font-size: 0.8rem; color: #888; }
+
+        /* DATA INPUT */
+        .date-input {
+            width: 100%;
+            padding: 15px;
+            background: #252525;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .date-input:focus { border-color: var(--gold); }
+
+        /* GRADE DE HORÁRIOS */
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 por linha */
+            gap: 8px;
+        }
+
+        .time-chip {
+            background: #252525;
+            border: 1px solid #444;
+            padding: 10px 5px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .time-chip:hover { background: #333; }
+        
+        .time-chip.selected {
+            background: var(--gold);
+            color: black;
+            border-color: var(--gold);
+            font-weight: bold;
+        }
+
+        .loading-text { font-size: 0.9rem; color: #666; grid-column: span 4; text-align: center; }
+
+        /* INPUTS NORMAIS */
+        .input-group { margin-bottom: 15px; }
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            background: #252525;
+            border: none;
+            border-bottom: 2px solid #444;
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+        .input-field:focus { border-bottom-color: var(--gold); outline: none; }
+
+        /* BOTÃO PRINCIPAL */
+        .btn-submit {
+            width: 100%;
+            background: var(--gold);
+            color: #000;
+            padding: 15px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: transform 0.2s;
+        }
+        .btn-submit:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+
+        /* Esconder inputs reais para usarmos a interface bonita */
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>Barbearia VIP</h1>
+            <p class="subtitle">Agende seu estilo em segundos.</p>
+        </header>
+
+        <form id="form-agendamento">
+            
+            <div class="section-title">1. Escolha o Serviço</div>
+            <div class="services-grid">
+                <div class="service-card" onclick="selecionarServico('Corte', this)">
+                    <span class="service-icon">✂️</span>
+                    <div class="service-name">Corte</div>
+                    <div class="service-price">R$ 40,00</div>
+                </div>
+                <div class="service-card" onclick="selecionarServico('Barba', this)">
+                    <span class="service-icon">🧔</span>
+                    <div class="service-name">Barba</div>
+                    <div class="service-price">R$ 30,00</div>
+                </div>
+                <div class="service-card" onclick="selecionarServico('Completo', this)">
+                    <span class="service-icon">👑</span>
+                    <div class="service-name">Completo</div>
+                    <div class="service-price">R$ 65,00</div>
+                </div>
+                <div class="service-card" onclick="selecionarServico('Pezinho', this)">
+                    <span class="service-icon">📏</span>
+                    <div class="service-name">Pezinho</div>
+                    <div class="service-price">R$ 15,00</div>
+                </div>
+            </div>
+            <input type="hidden" id="servico" required>
+
+            <div class="section-title">2. Escolha a Data</div>
+            <input type="date" id="data" class="date-input" required>
+
+            <div class="section-title">3. Escolha o Horário</div>
+            <div id="container-horarios" class="time-grid">
+                <div class="loading-text">Selecione uma data acima...</div>
+            </div>
+            <input type="hidden" id="hora" required>
+
+            <div class="section-title">4. Seus Dados</div>
+            <div class="input-group">
+                <input type="text" id="nome" class="input-field" placeholder="Seu Nome Completo" required>
+            </div>
+            <div class="input-group">
+                <input type="tel" id="whatsapp" class="input-field" placeholder="Seu WhatsApp" required>
+            </div>
+
+            <button type="submit" class="btn-submit">CONFIRMAR AGENDAMENTO</button>
+
+        </form>
+    </div>
+
+    <script>
+        // Lógica Visual para Seleção de Serviço
+        function selecionarServico(valor, elementoCard) {
+            // Tira a classe 'selected' de todos
+            document.querySelectorAll('.service-card').forEach(card => card.classList.remove('selected'));
+            // Coloca no que foi clicado
+            elementoCard.classList.add('selected');
+            // Salva no input escondido
+            document.getElementById('servico').value = valor;
+        }
+
+        // Lógica Visual para Seleção de Horário
+        function selecionarHora(valor, elementoChip) {
+            document.querySelectorAll('.time-chip').forEach(chip => chip.classList.remove('selected'));
+            elementoChip.classList.add('selected');
+            document.getElementById('hora').value = valor;
+        }
+
+        // --- LÓGICA DE COMUNICAÇÃO COM SERVIDOR (IGUAL ANTES) ---
+        
+        const dataInput = document.getElementById('data');
+        const containerHorarios = document.getElementById('container-horarios');
+        const form = document.getElementById('form-agendamento');
+
+        dataInput.addEventListener('change', async () => {
+            const dataEscolhida = dataInput.value;
+            if (!dataEscolhida) return;
+
+            containerHorarios.innerHTML = '<div class="loading-text">Buscando horários... 🔄</div>';
+
+            try {
+                const resposta = await fetch(`/horarios/${dataEscolhida}`);
+                const horariosLivres = await resposta.json();
+
+                containerHorarios.innerHTML = ''; // Limpa
+
+                if (horariosLivres.length === 0) {
+                    containerHorarios.innerHTML = '<div class="loading-text">Dia lotado! 🚫</div>';
+                } else {
+                    horariosLivres.forEach(hora => {
+                        // Cria o "chip" visual em vez de option
+                        const chip = document.createElement('div');
+                        chip.className = 'time-chip';
+                        chip.textContent = hora;
+                        chip.onclick = () => selecionarHora(hora, chip);
+                        containerHorarios.appendChild(chip);
+                    });
+                }
+            } catch (erro) {
+                containerHorarios.innerHTML = '<div class="loading-text">Erro de conexão ⚠️</div>';
+            }
+        });
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            // Verificação extra visual
+            if(!document.getElementById('servico').value) {
+                alert("Por favor, clique em um serviço!");
+                return;
+            }
+            if(!document.getElementById('hora').value) {
+                alert("Por favor, clique em um horário!");
+                return;
+            }
+
+            const dados = {
+                nome: document.getElementById('nome').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                servico: document.getElementById('servico').value,
+                data: document.getElementById('data').value,
+                hora: document.getElementById('hora').value
+            };
+
+            try {
+                const resposta = await fetch('/agendar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+                const resultado = await resposta.json();
+
+                if (resposta.ok) {
+                    alert("✅ Agendamento Confirmado!");
+                    window.location.reload(); // Recarrega a página para limpar tudo
+                } else {
+                    alert(resultado.erro || "Erro ao agendar.");
+                    // Atualiza horários se der erro
+                    dataInput.dispatchEvent(new Event('change'));
+                }
+            } catch (erro) {
+                alert("Erro de conexão.");
+            }
+        });
+    </script>
+
+</body>
+</html>
