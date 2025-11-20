@@ -182,7 +182,7 @@
             tabela.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Carregando...</td></tr>';
 
             try {
-                const resposta = await fetch('http://localhost:3000/agendamentos');
+                const resposta = await fetch('/agendamentos');
                 todosAgendamentos = await resposta.json();
                 
                 // Ordenar por Data e Hora
@@ -273,7 +273,7 @@
             if (!confirm("Tem certeza que deseja excluir este agendamento?")) return;
 
             try {
-                await fetch(`http://localhost:3000/agendamento/${id}`, { method: 'DELETE' });
+                await fetch(`/agendamento/${id}`, { method: 'DELETE' });
                 carregarAgendamentos(); // Recarrega tudo
             } catch (erro) {
                 alert("Erro ao deletar.");
@@ -294,4 +294,5 @@
 
     </script>
 </body>
+
 </html>
